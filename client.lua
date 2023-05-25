@@ -1,3 +1,4 @@
+local Config = module(GetCurrentResourceName(),"config")
 -- Libs
 
 local PlayerId = 0
@@ -133,7 +134,7 @@ local function promptPickup(loc_id, pos)
     end
 
     if IsControlJustPressed(0, 38) and cooldown <= 0 then
-        cooldown = 100
+        cooldown = Config.cooldown
 
         local asset1 = "core"
         local asset2 = "ent_brk_banknotes"
