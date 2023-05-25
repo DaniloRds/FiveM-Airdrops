@@ -21,7 +21,7 @@ Resmon: 0.01ms
 Para usar basta extrair a pasta do script dentro da sua pasta de resources.
 Após isso digite `ensure unity_airdrops` em seu server.cfg
 
-Depois basta abrir o `server.lua` e ir na linha 118 para configurar seus itens!
+Depois basta abrir o `config.lua` e configurar seu script!
 
 <h3> Objetivo </h3>
 
@@ -33,17 +33,18 @@ ou caindo de forma aleátoria de tempos em tempos.
 O script pode ser executado tanto pelo comando /airdrop (quantidade) ou você pode predefinir um tempo aléatorio entre 30 e 60 minutos por exemplo
 para os airdrops cairem de forma automatica. 
 
-Ao se passar 30 minutos, se ainda estiver algum airdrop ele é deletado automaticamente.
+Ao se passar 30 minutos, se ainda estiver algum airdrop não coletado ele é deletado automaticamente.
 
 Os itens que podem vir nos airdrops são totalmente configuráveis, tanto itens quanto dinheiro, armas e outros.
+
+<h3> Atualização 1.8.1 </h3>
+Nessa atualização eu apenas melhorei a forma de configuração do script e dei uma "organizada" e otimiziada no código geral.
 
 <h3> Atualizações Pendentes </h3>
 
 Eu havia adicionado um prop para ser criado junto aos airdrops como mostra essa imagem abaixo, a parte de criar os props funcionou perfeitamente, porém, quando
 você coleta o airdrop ou quando passa 30 minutos (os que não foram coletados são deletados automaticamente) as caixas não estão sumindo e eu não consegui arrumar,
 então vou deixar para proximas atualizações, ou se alguém quiser corrigir eu atualizo aqui.
-
-Deixei o código de criar os props comentado na linha 84 do `client.lua`
 
 <div align="left">
 <img src="https://media.discordapp.net/attachments/795622143433637889/1008867959101464698/unknown.png" width="200px" />
