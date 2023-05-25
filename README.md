@@ -19,7 +19,7 @@ Resmon: 0.01ms
 <h3> Como Usar </h3>
 
 Para usar basta extrair a pasta do script dentro da sua pasta de resources.
-Após isso digite `ensure unity_airdrops` em seu server.cfg
+Após isso renomeie sua pasta para unity_airdrops e coloque `ensure unity_airdrops` em seu server.cfg
 
 Depois basta abrir o `config.lua` e configurar seu script!
 
