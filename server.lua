@@ -164,16 +164,16 @@ AddEventHandler("unity:pickup_dropper", function(loc_id)
 					TriggerClientEvent("Notify",source,"sucesso","Você coletou R$ "..QuantidadeMoney.."")
 
 				elseif lucky > 4000 and lucky <= 5000 then
-					vRP.giveInventoryItem(user_id, item, Quantidade,true)
-					vRP.giveInventoryItem(user_id, item, Quantidade,true)
-					vRP.giveInventoryItem(user_id, item, Quantidade,true)
+					vRP.giveInventoryItem(user_id, ItemUm, Quantidade,true)
+					vRP.giveInventoryItem(user_id, ItemTres, Quantidade,true)
+					vRP.giveInventoryItem(user_id, ItemDois, Quantidade,true)
 					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..Quantidade.."x " ..item..", " ..Quantidade.."x " ..item.. "e " ..Quantidade.."x " ..item.."", 10000)
 
 				elseif lucky > 5000 and lucky <= 6000 then
-					vRP.giveInventoryItem(user_id, ItemCindo, Quantidade,true)
+					vRP.giveInventoryItem(user_id, ItemCinco, Quantidade,true)
 					vRP.giveInventoryItem(user_id, ItemSeis, Quantidade,true)
 					vRP.giveInventoryItem(user_id, ItemSete, Quantidade,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..Quantidade.."x "..ItemCindo..", "..Quantidade.."x" ..ItemSeis.. "e "..Quantidade.."x " ..ItemSete.."", 10000)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..Quantidade.."x "..ItemCinco..", "..Quantidade.."x" ..ItemSeis.. "e "..Quantidade.."x " ..ItemSete.."", 10000)
 
 				elseif lucky > 6000 and lucky <= 8000 then
 					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
