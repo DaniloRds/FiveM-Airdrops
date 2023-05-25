@@ -4,21 +4,23 @@ local Proxy = module("vrp", "lib/Proxy")
 
 vRP = Proxy.getInterface("vRP")
 vRPclient = Tunnel.getInterface("vRP")
-GFclient = Tunnel.getInterface("unity_airdrops")
+
+local Config = module(GetCurrentResourceName(),"config")
 
 local pickup_positions = {}
 local total_drops_requested = 0
 local condneve = 0
 
 ------------------------------------------------------------------------------------
--- Ativar presente automatico
+-- NÃO MEXA EM NADA SE NÃO SOUBER O QUE ESTÁ FAZENDO!
 ------------------------------------------------------------------------------------
-local activateAutoGift = true
 
-local minTimeToSpawn = 40   --Minimo de tempo pra spawnar
-local maxTimeToSpawn = 60   --Maximop de tempo pra spawnar
-local quantidadeMin = 4      --Minimo de quantidade para spawnar
-local quantidadeMax = 8     --Maximo de quantidade para spawnar
+local activateAutoGift = Config.AutoGift
+
+local minTimeToSpawn = Config.minTimeToSpawn   
+local maxTimeToSpawn = Config.maxTimeToSpawn   
+local quantidadeMin = Config.quantidadeMin   
+local quantidadeMax = Config.quantidadeMax   
 ------------------------------------------------------------------------------------
 Citizen.CreateThread(function() 
 	while activateAutoGift do
@@ -60,14 +62,11 @@ Citizen.CreateThread(function()
 	end
 end)
 
-------------------------------------------------------------------------------------
--- COMANDO CASO QUEIRA FAZER OS DROPS CAIREM MANUALMENTE /airdrop QUANTIDADE
-------------------------------------------------------------------------------------
-RegisterCommand('airdrop', function(source, args, rawCommand)
+RegisterCommand(Config.CommandAir, function(source, args, rawCommand)
 	local user_id = vRP.getUserId(source)
 	if user_id ~= nil then
 		local player = vRP.getUserSource(user_id)
-		if vRP.hasPermission(user_id,"admin.permissao") and args[1] ~= nil then
+		if vRP.hasPermission(user_id,Config.Permission) and args[1] ~= nil then
 			local qtd = tonumber(args[1])
 			if qtd < 1 then 
 				qtd = 1 
@@ -117,68 +116,32 @@ end)
 
 --[[ Items ]]--
 
--- CONFIGURE DAQUI PARA BAIXO OS ITENS QUE VÃO VIR NO DROP
+-- CONFIGURAÇÃO DOS ITENS QUE PODEM VIR, CASO QUEIRA ALTERAR VÁ ATÉ config.lua
 
-local ItemUm = "polvora"
-local ItemDois = "chumbo"
-local ItemTres = "capsula"
-local ItemQuatro = "dinheiro-sujo"
-local ItemCindo = "tecido"
-local ItemSeis = "algemas"
-local ItemSete = "lockpick"
-local ItemOito = "energetico"
+local ItemUm = Config.ItemUm
+local ItemDois = Config.ItemDois
+local ItemTres = Config.ItemTres
+local ItemQuatro = Config.ItemQuatro
+local ItemCinco = Config.ItemCinco
+local ItemSeis = Config.ItemSeis
+local ItemSete = Config.ItemSete
+local ItemOito = Config.ItemOito
+----------------------------------------------------
 
 -- AQUI SÃO AS QUANTIDADES POSSÍVEIS PARA VIR CADA ITEM
 
-local Quant = 1 -- AQUI SÓ VEM 1
-local Quantidade = math.random(1, 3) -- AQUIPODE VIR ALEATÓRIO 1 a 3
-local QuantidadeUm = math.random(5, 10) -- AQUI PODE VIR ALEATÓRIO DE 5 a 10
-local QuantidadeDois = math.random(10, 15) -- 
-local QuantidadeTres = math.random(15, 30) --
-local QuantidadeQuatro = math.random(0, 15000) -- USADO PRA DINHEIRO 0 -> 15000
-local AmmoQuantidade = math.random(20, 50) -- QUANTIDADE PARA MUNIÇÕES
+local Quantidade = Config.Quantidade -- AQUIPODE VIR ALEATÓRIO 1 a 3
+local QuantidadeMoney = Config.QuantidadeMoney -- USADO PRA DINHEIRO 0 -> 15000
+local AmmoQuantidade = Config.AmmoQuantidade-- QUANTIDADE PARA MUNIÇÕES
 ----------------------------------------------------
 
--- ARMAS QUE VOCÊS PODEM COLOCAR PARA DROPAR
-local whiteWeapons = {
-	"WEAPON_BAT",
-	"WEAPON_KNUCKLE",
-	"WEAPON_KNIFE",
-	"WEAPON_FLASHLIGHT",
-	"WEAPON_GOLFCLUB",
-	"WEAPON_HAMMER",
-	"WEAPON_CROWBAR",
-	"WEAPON_HATCHET",
-	"WEAPON_DAGGER",
-	"WEAPON_MACHETE",
-	"WEAPON_BOTTLE",
-}
+-- AQUI SÃO AS ARMAS
 
-local commonLethalWeapons = {
-	"WEAPON_PISTOL",
-	"WEAPON_COMBATPISTOL",
-	"WEAPON_STUNGUN"
-}
-local rareLethalWeapons = {
-	"WEAPON_SMG",
-	"WEAPON_ASSAULTSMG",
-	"WEAPON_PUMPSHOTGUN"
-}
-local epicLethalWeapons = {
-	"WEAPON_CARBINERIFLE",
-	"WEAPON_ASSAULTRIFLE",
-}
-local ammoWeapons = {
-	"WEAPON_PISTOL",
-	"WEAPON_COMBATPISTOL",
-	"WEAPON_STUNGUN",
-	"WEAPON_SMG",
-	"WEAPON_ASSAULTSMG",
-	"WEAPON_PUMPSHOTGUN",
-	"WEAPON_CARBINERIFLE",
-	"WEAPON_ASSAULTRIFLE"
-}
-
+local whiteWeapons = Config.whiteWeapons
+local commonLethalWeapons = Config.commonLethalWeapons
+local rareLethalWeapons = Config.rareLethalWeapons
+local epicLethalWeapons = Config.epicLethalWeapons
+local ammoWeapons = Config.ammoWeapons
 
 RegisterServerEvent("unity:pickup_dropper")
 AddEventHandler("unity:pickup_dropper", function(loc_id)
@@ -195,58 +158,57 @@ AddEventHandler("unity:pickup_dropper", function(loc_id)
 				local itemanameRandom = ""
 				local lucky = math.random(1, 10000)
 
+				if lucky < 2500 then -- MONEY
+					vRP.giveMoney(user_id, QuantidadeMoney)
+					vRPclient.notify(player,"Você ganhou R$" ..QuantidadeMoney)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou R$ "..QuantidadeMoney.."")
 
-				if lucky <= 5000 then -- MONEY
-					vRP.giveMoney(user_id, QuantidadeQuatro)
-					vRPclient.notify(player,"Você ganhou R$" ..QuantidadeQuatro)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou R$ "..QuantidadeQuatro.."")
+				elseif lucky > 4000 and lucky <= 5000 then
+					vRP.giveInventoryItem(user_id, item, Quantidade,true)
+					vRP.giveInventoryItem(user_id, item, Quantidade,true)
+					vRP.giveInventoryItem(user_id, item, Quantidade,true)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..Quantidade.."x " ..item..", " ..Quantidade.."x " ..item.. "e " ..Quantidade.."x " ..item.."", 10000)
 
-				elseif lucky > 3000 and lucky <= 5000 then
-					vRP.giveInventoryItem(user_id, ItemUm, QuantidadeUm,true)
-					vRP.giveInventoryItem(user_id, ItemDois, QuantidadeUm,true)
-					vRP.giveInventoryItem(user_id, ItemTres, QuantidadeUm,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..QuantidadeUm.."x " ..ItemUm..", " ..QuantidadeUm.."x " ..ItemDois.. "e " ..QuantidadeUm.."x " ..ItemTres.."", 10000)
-
-				elseif lucky > 5001 and lucky <= 7000 then
-					vRP.giveInventoryItem(user_id, ItemCindo, QuantidadeUm,true)
+				elseif lucky > 5000 and lucky <= 6000 then
+					vRP.giveInventoryItem(user_id, ItemCindo, Quantidade,true)
 					vRP.giveInventoryItem(user_id, ItemSeis, Quantidade,true)
 					vRP.giveInventoryItem(user_id, ItemSete, Quantidade,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..QuantidadeUm.."x "..ItemCindo..", "..Quantidade.."x" ..ItemSeis.. "e "..Quantidade.."x " ..ItemSete.."", 10000)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..Quantidade.."x "..ItemCindo..", "..Quantidade.."x" ..ItemSeis.. "e "..Quantidade.."x " ..ItemSete.."", 10000)
 
-				elseif lucky > 7001 and lucky <= 8999 then
-					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeQuatro,true)
+				elseif lucky > 6000 and lucky <= 8000 then
+					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
 					vRP.giveInventoryItem(user_id, ItemOito, Quantidade,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..QuantidadeQuatro.."x "..ItemQuatro..", "..Quantidade.."x" ..ItemOito.."", 10000)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..QuantidadeMoney.."x "..ItemQuatro..", "..Quantidade.."x" ..ItemOito.."", 10000)
 
-				elseif lucky > 9000 and lucky <= 9300 then
+				elseif lucky > 8000 and lucky <= 8800 then
 					itemanameRandom = whiteWeapons[math.random(1, #whiteWeapons)]
 					vRP.giveInventoryItem(user_id, "wbody|"..itemanameRandom, 1,true)
-					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeQuatro,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeQuatro.."x " ..ItemQuatro, 10000)
+					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeMoney.."x " ..ItemQuatro, 10000)
 				
-				elseif lucky > 9301 and lucky <= 9500 then
+				elseif lucky > 8800 and lucky <= 9300 then
 					itemanameRandom = commonLethalWeapons[math.random(1, #commonLethalWeapons)]
 					vRP.giveInventoryItem(user_id, "wbody|"..itemanameRandom, 1,true)
-					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeQuatro,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeQuatro.."x " ..ItemQuatro, 10000)
+					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeMoney.."x " ..ItemQuatro, 10000)
 
-				elseif lucky > 9500 and lucky <= 9700 then
+				elseif lucky > 9300 and lucky <= 9600 then
 					itemanameRandom = ammoWeapons[math.random(1, #ammoWeapons)]
 					vRP.giveInventoryItem(user_id, "wammo|"..itemanameRandom, AmmoQuantidade,true)
-					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeQuatro,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..AmmoQuantidade.."x munições de "..itemanameRandom.." e "..QuantidadeQuatro.."x " ..ItemQuatro, 10000)
+					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou "..AmmoQuantidade.."x munições de "..itemanameRandom.." e "..QuantidadeMoney.."x " ..ItemQuatro, 10000)
 
-				elseif lucky > 9701 and lucky <= 9800 then
+				elseif lucky > 9600 and lucky <= 9800 then
 					itemanameRandom = rareLethalWeapons[math.random(1, #rareLethalWeapons)]
 					vRP.giveInventoryItem(user_id, "wbody|"..itemanameRandom, 1,true)
-					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeQuatro,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeQuatro.."x " ..ItemQuatro, 10000)
+					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeMoney.."x " ..ItemQuatro, 10000)
 
-				elseif lucky > 9801 and lucky <= 9999 then
+				elseif lucky > 9800 and lucky <= 10000 then
 					itemanameRandom = epicLethalWeapons[math.random(1, #epicLethalWeapons)]
 					vRP.giveInventoryItem(user_id, "wbody|"..itemanameRandom, 1,true)
-					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeQuatro,true)
-					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeQuatro.."x "..ItemQuatro, 10000)
+					vRP.giveInventoryItem(user_id, ItemQuatro, QuantidadeMoney,true)
+					TriggerClientEvent("Notify",source,"sucesso","Você coletou 1x "..itemanameRandom.." e "..QuantidadeMoney.."x "..ItemQuatro, 10000)
 
 				else
 					TriggerClientEvent("Notify",source,"aviso","Você deu azar e não coletou nada...", 5000)
