@@ -4,7 +4,7 @@
 -- Contact: unitystorefivem@gmail.com
 -- Author: Danilo#2592
 -- Name: Airdrops 
--- Version: 1.8.1
+-- Version: 1.8.2
 ----------------------- [ Unity ] -----------------------
 fx_version 'adamant'
 game 'gta5'
