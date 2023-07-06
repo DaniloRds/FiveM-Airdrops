@@ -12,10 +12,7 @@ PlayerId = PlayerPedId()
 GetPedId = GetPlayerPed(-1)
 
 Citizen.Wait(500)
-
 end
-
-
 
 end)
 function DrawText3D(text, x, y, z, s)
@@ -99,6 +96,9 @@ AddEventHandler("unity:gift:new_dropper", function(loc_id, loc_position)
     SetBlipSprite(blip, 94)
     SetBlipColour(blip, 1)
     SetBlipFlashes(blip, true)
+    BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString("Airdrop")
+    EndTextCommandSetBlipName(blip)
     table.insert(positions, {id = loc_id, position = loc_position, blip = blip})
 	--CarregarObjeto(loc_position.x, loc_position.y, loc_position.z)
     Wait(15000)
